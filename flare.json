@@ -1,0 +1,10 @@
+{
+    "name": "Anuket flare",
+    
+    "client":{
+        "files": [
+            "ATON.flare.anuket.js",
+            "config/logic.js"
+        ]
+    }
+}
