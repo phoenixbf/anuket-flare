@@ -4,53 +4,55 @@
     author: bruno.fanini_AT_gmail.com
 
 ===========================================================*/
+{
+    let F = new ATON.Flare("anuket");
 
-    let AK = new ATON.Flare("anuket");
+    F.setup = ()=>{
+        F._ws = undefined;
+        F._bConnected = false;
 
-    AK.setup = ()=>{
-        AK._ws = undefined;
-        AK._bConnected = false;
+        F._params = new URLSearchParams(window.location.search);
+        if (F._params.get("F.addr")) F.connect( F._params.get("F.addr") );
 
-        AK._params = new URLSearchParams(window.location.search);
-        if (AK._params.get("ak.addr")) AK.connect( AK._params.get("ak.addr") );
-
-        AK.log("Initialized");
+        F.log("Initialized");
     };
 
-    AK.connect = (addr)=>{
-        AK._ws = new WebSocket(addr);
+    F.connect = (addr)=>{
+        F._ws = new WebSocket(addr);
 
-        AK._ws.addEventListener('open', (event)=>{
-            AK.log("Connected!");
-            AK._bConnected = true;
+        F._ws.addEventListener('open', (event)=>{
+            F.log("Connected!");
+            F._bConnected = true;
         });
 
-        AK._ws.addEventListener('message', (event)=>{
-            AK.onMessage(event.data);
+        F._ws.addEventListener('message', (event)=>{
+            F.onMessage(event.data);
         });
 
-        AK._ws.addEventListener('close', (event)=>{ 
-            AK.log('Connection has been closed');
-            AK._bConnected = false;
+        F._ws.addEventListener('close', (event)=>{ 
+            F.log('Connection has been closed');
+            F._bConnected = false;
         });
 
-        AK._ws.addEventListener('error', (event)=>{ 
-            AK.log('Error:' + event);
-            AK._bConnected = false;
+        F._ws.addEventListener('error', (event)=>{ 
+            F.log('Error:' + event);
+            F._bConnected = false;
         });
     };
 
-    AK.onMessage = (msg)=>{
-        AK.console(msg);
+    F.onMessage = (msg)=>{
+        F.console(msg);
     };
 
-    AK.sendMessage = (msg)=>{
-        if (!AK._bConnected) return;
+    F.sendMessage = (msg)=>{
+        if (!F._bConnected) return;
 
-        AK._ws.send(msg);
+        F._ws.send(msg);
     };
+
 /*
-    AK.update = ()=>{
-
+    F.update = ()=>{
+        console.log("a")
     };
 */
+}
