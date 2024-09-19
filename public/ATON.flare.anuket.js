@@ -18,6 +18,11 @@
     };
 
     F.connect = (addr)=>{
+        if (!addr){
+            F.log("Invalid connect address");
+            return;
+        }
+
         F._ws = new WebSocket(addr);
 
         F._ws.addEventListener('open', (event)=>{
