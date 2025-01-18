@@ -3,8 +3,7 @@
     
     "client":{
         "files": [
-            "ATON.flare.anuket.js",
-            "config/logic.js"
+            "ATON.flare.anuket.js"
         ]
     }
 }
