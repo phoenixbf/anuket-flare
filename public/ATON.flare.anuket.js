@@ -22,7 +22,7 @@
 
         if (F._params.get("anuket.logic")){
             let logicpath = String(F._params.get("anuket.logic"));
-            if (!logicpath.includes("/")) logicpath = "/flares/anuket/config/"+logicpath+".js";
+            if (!logicpath.includes("/")) logicpath = ATON.PATH_FLARES+"anuket/config/"+logicpath+".js";
             
             ATON.loadScript( logicpath, ()=>{
                 if (addr) F.connect( String(addr) );
