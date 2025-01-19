@@ -12,6 +12,8 @@
 {
     let F = new ATON.Flare("anuket");
 
+    F.PATH_LOGIC = ATON.PATH_FLARES+"anuket/logic/";
+
     F.setup = ()=>{
         F._ws = undefined;
         F._bConnected = false;
@@ -22,7 +24,7 @@
 
         if (F._params.get("anuket.logic")){
             let logicpath = String(F._params.get("anuket.logic"));
-            if (!logicpath.includes("/")) logicpath = ATON.PATH_FLARES+"anuket/config/"+logicpath+".js";
+            if (!logicpath.includes("/")) logicpath = F.PATH_LOGIC + logicpath+".js";
             
             ATON.loadScript( logicpath, ()=>{
                 if (addr) F.connect( String(addr) );
