@@ -1,12 +1,15 @@
 /*
     Anuket ATON flare
 
-    author: bruno.fanini_AT_gmail.com
+    Remote control/interaction plugin for ATON Apps
+    developed under task 3.3 (CHANGES project - https://sites.google.com/uniroma1.it/changes/home)
+
+    author: bruno.fanini_AT_cnr.it
 
     Params
     - anuket.srv: anuket service address
+    - anuket.logic: custom logic in the form <mylogic>|<role> (e.g.: "samplelogic|controller")
     - anuket.ses: session ID
-    - anuket.logic: url for custom logic script
 
 ===========================================================*/
 {
@@ -20,23 +23,29 @@
     F.setup = ()=>{
         F._ws = undefined;
         F._bConnected = false;
+        //F._bReconnect = true; //TODO
 
         F.params = new URLSearchParams(window.location.search);
         
-        let addr  = F.params.get("anuket.srv");
+        let addr = F.params.get("anuket.srv");
 
         if (F.params.get("anuket.logic")){
-            let logicpath = String(F.params.get("anuket.logic"));
+            let logx = String(F.params.get("anuket.logic"));
+
+            logx = logx.split("|");
+
+            let logicpath = logx[0];
             if (!logicpath.includes("/")) logicpath = F.PATH_LOGIC + logicpath+".js";
+
+            let role = undefined;
+            if (logx[1]) role = logx[1];
             
             ATON.loadScript( logicpath, ()=>{
                 if (addr) F.connect( String(addr) );
 
                 F.log("Logic loaded");
 
-                if (F.params.get("anuket.role")){
-                    let role = String(F.params.get("anuket.role"));
-
+                if (role){
                     let setuproutine = F.logic[role];
                     if (setuproutine) setuproutine();
 
@@ -103,7 +112,8 @@
     };
 
     F.setLogic = (role, setup)=>{
-        if (!F.logic) return;
+        if (!setup) return;
+        
         if (F.logic[role]){
             F.log("Logic already defined for role '"+role+"'");
             return;
