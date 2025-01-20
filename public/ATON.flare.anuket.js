@@ -14,20 +14,34 @@
 
     F.PATH_LOGIC = ATON.PATH_FLARES+"anuket/logic/";
 
+    // This handels all custom logic
+    F.logic = {};
+
     F.setup = ()=>{
         F._ws = undefined;
         F._bConnected = false;
 
-        F._params = new URLSearchParams(window.location.search);
+        F.params = new URLSearchParams(window.location.search);
         
-        let addr  = F._params.get("anuket.srv");
+        let addr  = F.params.get("anuket.srv");
 
-        if (F._params.get("anuket.logic")){
-            let logicpath = String(F._params.get("anuket.logic"));
+        if (F.params.get("anuket.logic")){
+            let logicpath = String(F.params.get("anuket.logic"));
             if (!logicpath.includes("/")) logicpath = F.PATH_LOGIC + logicpath+".js";
             
             ATON.loadScript( logicpath, ()=>{
                 if (addr) F.connect( String(addr) );
+
+                F.log("Logic loaded");
+
+                if (F.params.get("anuket.role")){
+                    let role = String(F.params.get("anuket.role"));
+
+                    let setuproutine = F.logic[role];
+                    if (setuproutine) setuproutine();
+
+                    F.log("Role '"+role+"' set");
+                }
             });
         }
         else {
@@ -49,7 +63,7 @@
             F.log("Connected!");
             F._bConnected = true;
 
-            if (F._params.get("anuket.ses")) F.joinSession( String(F._params.get("anuket.ses")) );
+            if (F.params.get("anuket.ses")) F.joinSession( String(F.params.get("anuket.ses")) );
 
             ATON.fireEvent("ANUKET_CONNECTED");
         });
@@ -76,15 +90,27 @@
     F.joinSession = (ssid)=>{
         if (!F._bConnected) return false;
 
-        F.log("Request join session "+ssid);
+        F.log("Request join session '"+ssid+"'");
 
         F.sendMessage("#"+ssid);
+        ATON.fireEvent("ANUKET_JOIN_REQ", ssid);
     };
 
     F.sendMessage = (msg)=>{
         if (!F._bConnected) return;
 
         F._ws.send(msg);
+    };
+
+    F.setLogic = (role, setup)=>{
+        if (!F.logic) return;
+        if (F.logic[role]){
+            F.log("Logic already defined for role '"+role+"'");
+            return;
+        }
+
+        F.logic[role] = setup;
+        F.log("Added logic for role '"+role+"'");
     };
 
 /*
