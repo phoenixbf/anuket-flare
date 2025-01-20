@@ -24,7 +24,7 @@
         if (!logicpath.includes("/")) logicpath = F.PATH_LOGIC + logicpath+".js";
 
         ATON.loadScript( logicpath, ()=>{
-            if (addr) F.connect( String(addr) );
+            if (F._addr) F.connect( F._addr );
 
             F.log("Logic loaded");
 
@@ -44,7 +44,8 @@
 
         F.params = new URLSearchParams(window.location.search);
         
-        let addr = F.params.get("anuket.srv");
+        F._addr = undefined;
+        if (F.params.get("anuket.srv")) F._addr = String(F.params.get("anuket.srv"));
 
         if (F.params.get("anuket.logic")){
             let logx = String(F.params.get("anuket.logic"));
@@ -54,7 +55,7 @@
             F.loadLogic(logx[0], logx[1]);;
         }
         else {
-            if (addr) F.connect( String(addr) );
+            if (F._addr) F.connect( F._addr );
         }
 
         F.log("Initialized");
