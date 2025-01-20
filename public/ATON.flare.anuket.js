@@ -20,6 +20,23 @@
     // This handels all custom logic
     F.logic = {};
 
+    F.loadLogic = (logicpath, role)=>{
+        if (!logicpath.includes("/")) logicpath = F.PATH_LOGIC + logicpath+".js";
+
+        ATON.loadScript( logicpath, ()=>{
+            if (addr) F.connect( String(addr) );
+
+            F.log("Logic loaded");
+
+            if (role){
+                let setuproutine = F.logic[role];
+                if (setuproutine) setuproutine();
+
+                F.log("Role '"+role+"' set");
+            }
+        });
+    };
+
     F.setup = ()=>{
         F._ws = undefined;
         F._bConnected = false;
@@ -34,24 +51,7 @@
 
             logx = logx.split("|");
 
-            let logicpath = logx[0];
-            if (!logicpath.includes("/")) logicpath = F.PATH_LOGIC + logicpath+".js";
-
-            let role = undefined;
-            if (logx[1]) role = logx[1];
-            
-            ATON.loadScript( logicpath, ()=>{
-                if (addr) F.connect( String(addr) );
-
-                F.log("Logic loaded");
-
-                if (role){
-                    let setuproutine = F.logic[role];
-                    if (setuproutine) setuproutine();
-
-                    F.log("Role '"+role+"' set");
-                }
-            });
+            F.loadLogic(logx[0], logx[1]);;
         }
         else {
             if (addr) F.connect( String(addr) );
