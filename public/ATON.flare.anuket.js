@@ -71,6 +71,8 @@
     @param {string} addr - url of Anuket websocket service
     */
     F.connect = (addr)=>{
+        if (F._bConnected) return;
+
         if (!addr){
             F.log("Invalid connect address");
             return;
