@@ -127,7 +127,7 @@
     */
     F.sendMessage = (msg)=>{
         if (!F._bConnected) return;
-        //if (F._ws.readyState !== WebSocket.OPEN) return;
+        if (F._ws.readyState !== WebSocket.OPEN) return;
 
         F._ws.send(msg);
     };
