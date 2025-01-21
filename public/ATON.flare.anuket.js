@@ -20,6 +20,11 @@
     // This handels all custom logic
     F.logic = {};
 
+    /**
+    Load logic from path, and if provided a specific role 
+    @param {string} logicpath - url to logic file or logic-name from dedicated logic folder of Anuket
+    @param {string} role - (optional) The role to load
+    */
     F.loadLogic = (logicpath, role)=>{
         if (!logicpath.includes("/")) logicpath = F.PATH_LOGIC + logicpath+".js";
 
@@ -61,6 +66,10 @@
         F.log("Initialized");
     };
 
+    /**
+    Connect to Anuket service 
+    @param {string} addr - url of Anuket websocket service
+    */
     F.connect = (addr)=>{
         if (!addr){
             F.log("Invalid connect address");
@@ -97,6 +106,10 @@
         });
     };
 
+    /**
+    Join a session (subscribe)
+    @param {string} ssid - session ID
+    */
     F.joinSession = (ssid)=>{
         if (!F._bConnected) return false;
 
@@ -106,6 +119,10 @@
         ATON.fireEvent("ANUKET_JOIN_REQ", ssid);
     };
 
+    /**
+    Send message (string)
+    @param {string} msg - string to send to current session participants
+    */
     F.sendMessage = (msg)=>{
         if (!F._bConnected) return;
         if (F._ws.readyState !== WebSocket.OPEN) return;
@@ -113,6 +130,11 @@
         F._ws.send(msg);
     };
 
+    /**
+    Define logic for a given role
+    @param {string} role - the role
+    @param {function} setup - the setup routine for the role
+    */
     F.setLogic = (role, setup)=>{
         if (!setup) return;
         
