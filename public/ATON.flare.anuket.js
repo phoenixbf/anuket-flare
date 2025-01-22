@@ -23,12 +23,14 @@
         CONNECTED: 2
     };
 
-
     F._cState = F.CSTATE.DISCONNECTED;
 
     // This handels all custom logic
     F.logic = {};
 
+    F.params = new URLSearchParams(window.location.search);
+    F._ws   = undefined;
+    F._addr = undefined;
 
     /**
     Load logic from path, and if provided a specific role 
@@ -53,11 +55,6 @@
     };
 
     F.setup = ()=>{
-        F._ws = undefined;
-
-        F.params = new URLSearchParams(window.location.search);
-        
-        F._addr = undefined;
         if (F.params.get("anuket.srv")) F._addr = String(F.params.get("anuket.srv"));
 
         if (F.params.get("anuket.logic")){
@@ -65,7 +62,7 @@
 
             logx = logx.split("|");
 
-            F.loadLogic(logx[0], logx[1]);;
+            F.loadLogic(logx[0], logx[1]);
         }
         else {
             if (F._addr) F.connect( F._addr );
@@ -94,13 +91,13 @@
         }
 
         // Enter connecting state
-        F._cState === F.CSTATE.CONNECTING;
+        F._cState = F.CSTATE.CONNECTING;
 
         F._ws = new WebSocket(addr);
 
         F._ws.addEventListener('open', (event)=>{
             F.log("Connected!");
-            F._cState === F.CSTATE.CONNECTED;
+            F._cState = F.CSTATE.CONNECTED;
 
             if (F.params.get("anuket.ses")) F.joinSession( String(F.params.get("anuket.ses")) );
 
@@ -113,14 +110,14 @@
 
         F._ws.addEventListener('close', (event)=>{ 
             F.log('Connection has been closed');
-            F._cState === F.CSTATE.DISCONNECTED;
+            F._cState = F.CSTATE.DISCONNECTED;
 
             ATON.fireEvent("ANUKET_DISCONNECTED");
         });
 
         F._ws.addEventListener('error', (event)=>{ 
             F.log('Error:' + event);
-            F._cState === F.CSTATE.DISCONNECTED;
+            F._cState = F.CSTATE.DISCONNECTED;
 
             ATON.fireEvent("ANUKET_DISCONNECTED");
         });
