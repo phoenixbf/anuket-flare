@@ -17,9 +17,12 @@
 
     F.PATH_LOGIC = ATON.PATH_FLARES+"anuket/logic/";
     
-    F.CSTATE.DISCONNECTED = 0;
-    F.CSTATE.CONNECTING   = 1;
-    F.CSTATE.CONNECTED    = 2;
+    F.CSTATE = {
+        DISCONNECTED: 0,
+        CONNECTING: 1,
+        CONNECTED: 2
+    };
+
 
     F._cState = F.CSTATE.DISCONNECTED;
 
