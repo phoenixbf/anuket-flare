@@ -110,25 +110,25 @@
 
             if (F.params.get("anuket.ses")) F.joinSession( String(F.params.get("anuket.ses")) );
 
-            ATON.fireEvent("ANUKET_CONNECTED");
+            ATON.fire("ANUKET_CONNECTED");
         });
 
         F._ws.addEventListener('message', (event)=>{
-            ATON.fireEvent("ANUKET_MSG", event.data);
+            ATON.fire("ANUKET_MSG", event.data);
         });
 
         F._ws.addEventListener('close', (event)=>{ 
             F.log('Connection has been closed');
             F._cState = F.CSTATE.DISCONNECTED;
 
-            ATON.fireEvent("ANUKET_DISCONNECTED");
+            ATON.fire("ANUKET_DISCONNECTED");
         });
 
         F._ws.addEventListener('error', (event)=>{ 
             F.log('Error:' + event);
             F._cState = F.CSTATE.DISCONNECTED;
 
-            ATON.fireEvent("ANUKET_DISCONNECTED");
+            ATON.fire("ANUKET_DISCONNECTED");
         });
     };
 
@@ -142,7 +142,7 @@
         F.log("Request join session '"+ssid+"'");
 
         F.sendMessage("#"+ssid);
-        ATON.fireEvent("ANUKET_JOIN_REQ", ssid);
+        ATON.fire("ANUKET_JOIN_REQ", ssid);
     };
 
     /**
