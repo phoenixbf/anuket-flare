@@ -41,8 +41,6 @@
         if (!logicpath.includes("/")) logicpath = F.PATH_LOGIC + logicpath+".js";
 
         ATON.loadScript( logicpath, ()=>{
-            if (F._addr) F.connect( F._addr );
-
             F.log("Logic loaded");
 
             if (role){
@@ -51,6 +49,8 @@
 
                 F.log("Role '"+role+"' set");
             }
+
+            if (F._addr) F.connect( F._addr );
         });
     };
 
@@ -64,10 +64,11 @@
 
             F.loadLogic(logx[0], logx[1]);
         }
+/*
         else {
             if (F._addr) F.connect( F._addr );
         }
-
+*/
         F.log("Initialized");
     };
 
