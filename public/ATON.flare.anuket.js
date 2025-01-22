@@ -64,11 +64,7 @@
 
             F.loadLogic(logx[0], logx[1]);
         }
-/*
-        else {
-            if (F._addr) F.connect( F._addr );
-        }
-*/
+
         F.log("Initialized");
     };
 
@@ -151,9 +147,18 @@
     */
     F.sendMessage = (msg)=>{
         if (F._cState !== F.CSTATE.CONNECTED) return false;
-        //if (F._ws.readyState !== WebSocket.OPEN) return;
 
         F._ws.send(msg);
+    };
+
+    /**
+    Send object
+    @param {object} o - object to send to current session participants
+    */
+    F.sendObject = (o)=>{
+        if (F._cState !== F.CSTATE.CONNECTED) return false;
+
+        F._ws.send( JSON.stringify(o) );        
     };
 
     /**
