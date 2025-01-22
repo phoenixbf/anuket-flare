@@ -16,9 +16,16 @@
     let F = new ATON.Flare("anuket");
 
     F.PATH_LOGIC = ATON.PATH_FLARES+"anuket/logic/";
+    
+    F.CSTATE.DISCONNECTED = 0;
+    F.CSTATE.CONNECTING   = 1;
+    F.CSTATE.CONNECTED    = 2;
+
+    F._cState = F.CSTATE.DISCONNECTED;
 
     // This handels all custom logic
     F.logic = {};
+
 
     /**
     Load logic from path, and if provided a specific role 
@@ -44,8 +51,6 @@
 
     F.setup = ()=>{
         F._ws = undefined;
-        F._bConnected = false;
-        //F._bReconnect = true; //TODO
 
         F.params = new URLSearchParams(window.location.search);
         
@@ -71,18 +76,28 @@
     @param {string} addr - url of Anuket websocket service
     */
     F.connect = (addr)=>{
-        if (F._bConnected) return;
+        if (F._cState === F.CSTATE.CONNECTED){
+            F.log("Already connected to service");
+            return;
+        }
+        if (F._cState === F.CSTATE.CONNECTING){
+            F.log("Already connecting to service");
+            return;
+        }
 
         if (!addr){
             F.log("Invalid connect address");
             return;
         }
 
+        // Enter connecting state
+        F._cState === F.CSTATE.CONNECTING;
+
         F._ws = new WebSocket(addr);
 
         F._ws.addEventListener('open', (event)=>{
             F.log("Connected!");
-            F._bConnected = true;
+            F._cState === F.CSTATE.CONNECTED;
 
             if (F.params.get("anuket.ses")) F.joinSession( String(F.params.get("anuket.ses")) );
 
@@ -95,14 +110,14 @@
 
         F._ws.addEventListener('close', (event)=>{ 
             F.log('Connection has been closed');
-            F._bConnected = false;
+            F._cState === F.CSTATE.DISCONNECTED;
 
             ATON.fireEvent("ANUKET_DISCONNECTED");
         });
 
         F._ws.addEventListener('error', (event)=>{ 
             F.log('Error:' + event);
-            F._bConnected = false;
+            F._cState === F.CSTATE.DISCONNECTED;
 
             ATON.fireEvent("ANUKET_DISCONNECTED");
         });
@@ -113,7 +128,7 @@
     @param {string} ssid - session ID
     */
     F.joinSession = (ssid)=>{
-        if (!F._bConnected) return false;
+        if (F._cState !== F.CSTATE.CONNECTED) return false;
 
         F.log("Request join session '"+ssid+"'");
 
@@ -126,8 +141,8 @@
     @param {string} msg - string to send to current session participants
     */
     F.sendMessage = (msg)=>{
-        if (!F._bConnected) return;
-        if (F._ws.readyState !== WebSocket.OPEN) return;
+        if (F._cState !== F.CSTATE.CONNECTED) return false;
+        //if (F._ws.readyState !== WebSocket.OPEN) return;
 
         F._ws.send(msg);
     };
