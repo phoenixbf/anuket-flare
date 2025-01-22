@@ -72,6 +72,14 @@
     };
 
     /**
+    Return true if connected to Anuket service
+    @returns {boolean}
+    */
+    F.isConnected = ()=>{
+        return (F._cState === F.CSTATE.CONNECTED);
+    };
+
+    /**
     Connect to Anuket service 
     @param {string} addr - url of Anuket websocket service
     */
