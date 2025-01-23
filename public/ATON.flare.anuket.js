@@ -110,7 +110,10 @@
         });
 
         F._ws.addEventListener('message', (event)=>{
-            ATON.fire("ANUKET_MSG", event.data);
+            let data = event.data;
+            if (data.startsWith("{")) data = JSON.parse(data);
+
+            ATON.fire("ANUKET_MSG", data);
         });
 
         F._ws.addEventListener('close', (event)=>{ 
