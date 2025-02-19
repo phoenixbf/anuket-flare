@@ -37,7 +37,7 @@
     @param {string} logicpath - url to logic file or logic-name from dedicated logic folder of Anuket
     @param {string} role - (optional) The role to load
     */
-    F.loadLogic = (logicpath, role)=>{
+    F.loadLogic = (logicpath, role, onLoad)=>{
         if (!logicpath.includes("/")) logicpath = F.PATH_LOGIC + logicpath+".js";
 
         ATON.loadScript( logicpath, ()=>{
@@ -51,6 +51,8 @@
             }
 
             if (F._addr) F.connect( F._addr );
+
+            if (onLoad) onLoad();
         });
     };
 
@@ -169,7 +171,7 @@
     @param {string} role - the role
     @param {function} setup - the setup routine for the role
     */
-    F.setLogic = (role, setup)=>{
+    F.setRoleLogic = (role, setup)=>{
         if (!setup) return;
         
         if (F.logic[role]){
